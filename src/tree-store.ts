@@ -1,9 +1,16 @@
 // Для удобства и скорости будем использовать Map
+interface ITreeNode {
+  id: Readonly<number | "root">;
+  parent: number | string ;
+  type?: any;
+}
+
 
 export class TreeStore {
   private readonly itemsById: Map<number | string, any>; // Хранение всех элементов по id
   private readonly childrenByParentId: Map<number | string, any[]>; // Хранение дочерних элементов по id родителя
-  constructor(items: Array<any>) {
+  
+  constructor(items: Array<ITreeNode>) {
     this.itemsById = new Map();
     this.childrenByParentId = new Map();
 
@@ -25,20 +32,20 @@ export class TreeStore {
   }
 
 
-  public getAll(): Array<any> {
+  public getAll(): Array<ITreeNode> {
     return [...this.itemsById.values()];
   }
 
 
-  public getItem(id: number | string): any | undefined {
+  public getItem(id: number | string): ITreeNode | undefined {
     return this.itemsById.get(id);
   }
 
-  public getChildren(id: number | string): Array<any> {
+  public getChildren(id: number | string): Array<ITreeNode> {
     return this.childrenByParentId.get(id) || [];
   }
 
-  public getAllChildren(id: number | string): Array<any> {
+  public getAllChildren(id: number | string): Array<ITreeNode> {
     let result: Array<any> = [];
     const queue: Array<any> = this.getChildren(id);
 
@@ -52,11 +59,11 @@ export class TreeStore {
     return result;
   }
 
-  public getAllParents(id: number | string): Array<any> {
+  public getAllParents(id: number | string): Array<ITreeNode> {
     const result: Array<any> = [];
     let currentId = id;
     while (currentId && currentId !== "root") {
-      const parent = this.getItem(currentId)?.parent;
+      const parent = this.getItem(currentId)?.parent!;
       if (parent === 'root') break;
       result.push(this.getItem(parent)); // Добавляем родителя
       currentId = parent;
