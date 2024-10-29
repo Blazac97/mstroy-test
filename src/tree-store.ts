@@ -37,7 +37,7 @@ export class TreeStore {
   }
 
 
-  public getItem(id: number | string): ITreeNode | undefined {
+  public getItem(id: number | string): ITreeNode {
     return this.itemsById.get(id);
   }
 
@@ -63,7 +63,7 @@ export class TreeStore {
     const result: Array<any> = [];
     let currentId = id;
     while (currentId && currentId !== "root") {
-      const parent = this.getItem(currentId)?.parent!;
+      const parent = this.getItem(currentId)?.parent;
       if (parent === 'root') break;
       result.push(this.getItem(parent)); // Добавляем родителя
       currentId = parent;
